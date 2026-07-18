@@ -2,6 +2,7 @@ const express = require("express");
 const { body, param, validationResult } = require("express-validator");
 
 const db = require("../db");
+const logger = require("../logger");
 const { requireAuth, requireRole } = require("../auth/middleware");
 const { hashPassword, validatePasswordPolicy } = require("../auth/hash");
 const { logAuth } = require("../auth/audit");
@@ -36,7 +37,7 @@ router.get("/", requireAuth, requireRole("admin"), async (req, res) => {
     const users = await db.store.users.list();
     res.json({ data: users.map(sanitize) });
   } catch (e) {
-    console.error("GET /api/users:", e);
+    logger.error("GET /api/users:", e);
     res.status(500).json({ message: e.message });
   }
 });

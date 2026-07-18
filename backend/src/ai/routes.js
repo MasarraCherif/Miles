@@ -5,6 +5,7 @@ const { execFile } = require("child_process");
 const axios = require("axios");
 
 const db = require("../db");
+const logger = require("../logger");
 const { recognizeHandwriting } = require("../../ocr-handwritten.js");
 const { upload } = require("./upload");
 const { getGroq } = require("./groqClient");
@@ -102,7 +103,7 @@ router.post("/smart-credit-assessment", async (req, res) => {
         `${noteAnalyse ? `Note: ${noteAnalyse}` : ""}`,
     });
   } catch (error) {
-    console.error("Erreur /api/smart-credit-assessment:", error);
+    logger.error("Erreur /api/smart-credit-assessment:", error);
     res.status(500).json({
       message: "Erreur lors de l'analyse",
       error: error.message,
@@ -122,10 +123,10 @@ router.post("/scan-credit-document", upload.single("file"), async (req, res) => 
       });
     }
 
-    console.log("📄 Fichier reçu:", req.file.path);
+    logger.info("📄 Fichier reçu:", req.file.path);
 
     if (!recognizeHandwriting) {
-      console.error("❌ recognizeHandwriting n'est pas défini");
+      logger.error("❌ recognizeHandwriting n'est pas défini");
       return res.status(500).json({
         success: false,
         message: "Erreur de configuration OCR"
@@ -134,7 +135,7 @@ router.post("/scan-credit-document", upload.single("file"), async (req, res) => 
 
     const extractedData = await recognizeHandwriting(req.file.path);
 
-    console.log("📊 Données extraites:", extractedData);
+    logger.info("📊 Données extraites:", extractedData);
 
     if (!extractedData || (extractedData.revenuMensuel === 0 && extractedData.montantDemande === 0)) {
       fs.unlink(req.file.path, () => {});
@@ -164,7 +165,7 @@ router.post("/scan-credit-document", upload.single("file"), async (req, res) => 
     );
 
     fs.unlink(req.file.path, (err) => {
-      if (err) console.error("Erreur lors de la suppression du fichier:", err);
+      if (err) logger.error("Erreur lors de la suppression du fichier:", err);
     });
 
     res.json({
@@ -180,7 +181,7 @@ router.post("/scan-credit-document", upload.single("file"), async (req, res) => 
     });
 
   } catch (error) {
-    console.error("❌ OCR Error:", error);
+    logger.error("❌ OCR Error:", error);
 
     if (req.file && req.file.path) {
       fs.unlink(req.file.path, () => {});
@@ -262,7 +263,7 @@ Question: ${question || "Analyse ce client"}
       result: result || "Aucune réponse",
     });
   } catch (error) {
-    console.error("Erreur /api/ai/client-storytelling :", error);
+    logger.error("Erreur /api/ai/client-storytelling :", error);
     res.status(error.status || 500).json({
       message: error.message || "Erreur serveur",
     });
@@ -328,12 +329,12 @@ router.post("/ml/predict", async (req, res) => {
       { cwd: PY_CWD },
       (error, stdout, stderr) => {
         if (error) {
-          console.error("Erreur Python :", error);
+          logger.error("Erreur Python :", error);
           return res.status(500).json({ message: "Erreur exécution modèle ML" });
         }
 
         if (stderr) {
-          console.error("stderr Python :", stderr);
+          logger.error("stderr Python :", stderr);
         }
 
         try {
@@ -376,13 +377,13 @@ router.post("/ml/predict", async (req, res) => {
             explanation,
           });
         } catch (parseError) {
-          console.error("Erreur parsing JSON :", parseError);
+          logger.error("Erreur parsing JSON :", parseError);
           res.status(500).json({ message: "Réponse Python invalide" });
         }
       }
     );
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: "Erreur serveur ML" });
   }
 });
@@ -470,7 +471,7 @@ router.get("/ml/stats/monthly", async (req, res) => {
     res.json(formattedRows);
 
   } catch (error) {
-    console.error("Erreur /api/ml/stats/monthly :", error);
+    logger.error("Erreur /api/ml/stats/monthly :", error);
     res.json(getRealisticMockData().monthly);
   }
 });
@@ -537,7 +538,7 @@ router.get("/ml/stats/risk-distribution", async (req, res) => {
     res.json(completeData);
 
   } catch (error) {
-    console.error("Erreur /api/ml/stats/risk-distribution :", error);
+    logger.error("Erreur /api/ml/stats/risk-distribution :", error);
     res.json(getRealisticMockData().riskDistribution);
   }
 });
@@ -581,7 +582,7 @@ router.get("/ml/stats/kpi", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Erreur /api/ml/stats/kpi :", error);
+    logger.error("Erreur /api/ml/stats/kpi :", error);
     res.json(getRealisticMockData().kpi);
   }
 });
@@ -596,7 +597,7 @@ router.get("/ml/stats/accuracy-radial", async (req, res) => {
     res.json({ precision: precision });
 
   } catch (error) {
-    console.error("Erreur /api/ml/stats/accuracy-radial :", error);
+    logger.error("Erreur /api/ml/stats/accuracy-radial :", error);
     res.json({ precision: 89 });
   }
 });
@@ -638,7 +639,7 @@ router.get("/ml/history/all", async (req, res) => {
     res.json(result.rows);
 
   } catch (error) {
-    console.error("Erreur /api/ml/history/all :", error);
+    logger.error("Erreur /api/ml/history/all :", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -659,7 +660,7 @@ router.post("/ai/hybrid-storytelling/client", async (req, res) => {
       return res.status(400).json({ success: false, message: "Nom client requis" });
     }
 
-    console.log("🔍 Analyse client avec Groq:", clientName);
+    logger.info("🔍 Analyse client avec Groq:", clientName);
 
     execFile(
       "python",
@@ -667,7 +668,7 @@ router.post("/ai/hybrid-storytelling/client", async (req, res) => {
       { cwd: PY_CWD },
       (error, stdout, stderr) => {
         if (error) {
-          console.error("❌ Erreur Python:", error.message);
+          logger.error("❌ Erreur Python:", error.message);
           return res.status(500).json({
             success: false,
             message: "Erreur d'execution Python"
@@ -678,7 +679,7 @@ router.post("/ai/hybrid-storytelling/client", async (req, res) => {
           const result = JSON.parse(stdout);
           res.json({ success: true, data: result });
         } catch (e) {
-          console.error("❌ Erreur parsing JSON:", e.message);
+          logger.error("❌ Erreur parsing JSON:", e.message);
           res.status(500).json({
             success: false,
             message: "Erreur parsing JSON"
@@ -687,7 +688,7 @@ router.post("/ai/hybrid-storytelling/client", async (req, res) => {
       }
     );
   } catch (error) {
-    console.error("❌ Erreur serveur:", error);
+    logger.error("❌ Erreur serveur:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -697,7 +698,7 @@ router.post("/ai/hybrid-storytelling/client", async (req, res) => {
  * Analyse globale avec Groq LLM (VRAIE IA)
  */
 router.get("/ai/hybrid-storytelling/global", async (req, res) => {
-  console.log("🌍 Analyse globale demandee - IA Groq LLM");
+  logger.info("🌍 Analyse globale demandee - IA Groq LLM");
 
   execFile(
     "python",
@@ -705,7 +706,7 @@ router.get("/ai/hybrid-storytelling/global", async (req, res) => {
     { cwd: PY_CWD },
     (error, stdout, stderr) => {
       if (error) {
-        console.error("❌ Erreur Python:", error.message);
+        logger.error("❌ Erreur Python:", error.message);
         return res.status(500).json({
           success: false,
           message: "Erreur d'execution Python"
@@ -714,11 +715,11 @@ router.get("/ai/hybrid-storytelling/global", async (req, res) => {
 
       try {
         const result = JSON.parse(stdout);
-        console.log("✅ Analyse Groq terminee avec succes");
+        logger.info("✅ Analyse Groq terminee avec succes");
         res.json({ success: true, data: result });
       } catch (e) {
-        console.error("❌ Erreur parsing JSON:", e.message);
-        console.error("stdout recu:", stdout?.substring(0, 200));
+        logger.error("❌ Erreur parsing JSON:", e.message);
+        logger.error("stdout recu:", stdout?.substring(0, 200));
         res.status(500).json({
           success: false,
           message: "Erreur parsing JSON"

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 
 const db = require("../db");
+const logger = require("../logger");
 
 const memStore = new Map();
 const subscribers = new Map();
@@ -31,7 +32,7 @@ const ensureSchema = async () => {
 };
 
 ensureSchema().catch((e) =>
-  console.error("[notifications] schema init failed:", e.message)
+  logger.error("[notifications] schema init failed:", e.message)
 );
 
 const memListFor = (userId) =>

@@ -4,6 +4,7 @@ const Handlebars = require("handlebars");
 const nodemailer = require("nodemailer");
 const config = require("../config");
 const db = require("../db");
+const logger = require("../logger");
 
 const TEMPLATES_DIR = path.join(__dirname, "templates");
 const OUTBOX_DIR = path.join(__dirname, "..", "..", "mail-outbox");
@@ -18,10 +19,10 @@ if (mode === "smtp") {
     secure: config.smtp.port === 465,
     auth: { user: config.smtp.user, pass: config.smtp.password },
   });
-  console.log(`[mail] SMTP transport active (${config.smtp.host}:${config.smtp.port})`);
+  logger.info(`[mail] SMTP transport active (${config.smtp.host}:${config.smtp.port})`);
 } else {
   if (!fs.existsSync(OUTBOX_DIR)) fs.mkdirSync(OUTBOX_DIR, { recursive: true });
-  console.warn(`[mail] SMTP not configured — using mock outbox at ${OUTBOX_DIR}`);
+  logger.warn(`[mail] SMTP not configured — using mock outbox at ${OUTBOX_DIR}`);
 }
 
 const templateCache = new Map();

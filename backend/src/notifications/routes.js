@@ -2,6 +2,7 @@ const express = require("express");
 const { body, param, query, validationResult } = require("express-validator");
 
 const db = require("../db");
+const logger = require("../logger");
 const store = require("./store");
 const { requireAuth } = require("../auth/middleware");
 const { verifyAccess } = require("../auth/tokens");
@@ -34,7 +35,7 @@ router.get(
       });
       res.json(result);
     } catch (e) {
-      console.error("GET /api/notifications:", e);
+      logger.error("GET /api/notifications:", e);
       res.status(500).json({ message: e.message });
     }
   }
@@ -234,7 +235,7 @@ router.post(
       sourceRows: result.rows.length,
     });
   } catch (error) {
-    console.error("POST /api/notifications/generate-risk-alerts:", error);
+    logger.error("POST /api/notifications/generate-risk-alerts:", error);
     res.status(500).json({ message: error.message });
   }
 });

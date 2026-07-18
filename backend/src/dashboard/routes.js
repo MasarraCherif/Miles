@@ -2,6 +2,7 @@ const express = require("express");
 const { query, validationResult } = require("express-validator");
 
 const db = require("../db");
+const logger = require("../logger");
 const { requireAuth } = require("../auth/middleware");
 
 const router = express.Router();
@@ -91,7 +92,7 @@ router.get("/overview", requireAuth, async (req, res) => {
       },
     });
   } catch (e) {
-    console.error("GET /api/dashboard/overview:", e);
+    logger.error("GET /api/dashboard/overview:", e);
     res.status(500).json({ message: e.message });
   }
 });
@@ -134,7 +135,7 @@ router.get("/risk-clients-by-month", requireAuth, async (req, res) => {
       data: result.rows,
     });
   } catch (error) {
-    console.error("GET /api/dashboard/risk-clients-by-month:", error);
+    logger.error("GET /api/dashboard/risk-clients-by-month:", error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -185,7 +186,7 @@ router.get(
         counts: r.rows.map((x) => Number(x.nb)),
       });
     } catch (e) {
-      console.error("GET /api/dashboard/trend:", e);
+      logger.error("GET /api/dashboard/trend:", e);
       res.status(500).json({ message: e.message });
     }
   }
@@ -226,7 +227,7 @@ router.get("/distribution", requireAuth, async (req, res) => {
       })),
     });
   } catch (e) {
-    console.error("GET /api/dashboard/distribution:", e);
+    logger.error("GET /api/dashboard/distribution:", e);
     res.status(500).json({ message: e.message });
   }
 });
@@ -270,7 +271,7 @@ router.get(
         })),
       });
     } catch (e) {
-      console.error("GET /api/dashboard/top-risk:", e);
+      logger.error("GET /api/dashboard/top-risk:", e);
       res.status(500).json({ message: e.message });
     }
   }
@@ -308,7 +309,7 @@ router.get(
       );
       res.json({ data: r.rows });
     } catch (e) {
-      console.error("GET /api/dashboard/activity:", e);
+      logger.error("GET /api/dashboard/activity:", e);
       res.status(500).json({ message: e.message });
     }
   }

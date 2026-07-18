@@ -1,5 +1,6 @@
 const config = require("./config");
 const memoryStore = require("./memoryStore");
+const logger = require("./logger");
 
 let mode = "memory";
 let pgPool = null;
@@ -15,13 +16,13 @@ if (config.db.host) {
       password: config.db.password,
     });
     mode = "postgres";
-    console.log(`[db] PostgreSQL adapter active (${config.db.host}:${config.db.port})`);
+    logger.info(`[db] PostgreSQL adapter active (${config.db.host}:${config.db.port})`);
   } catch (err) {
-    console.error("[db] Failed to init PostgreSQL — falling back to memory:", err.message);
+    logger.error("[db] Failed to init PostgreSQL — falling back to memory:", err.message);
     mode = "memory";
   }
 } else {
-  console.warn("[db] DB_HOST not set — using IN-MEMORY mock store. Seeded admin: admin@miles.io / AdminMILES2026!");
+  logger.warn("[db] DB_HOST not set — using IN-MEMORY mock store. Seeded admin: admin@miles.io / AdminMILES2026!");
 }
 
 const pgUsersStore = {

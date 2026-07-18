@@ -2,6 +2,7 @@ const express = require("express");
 const { body, param, query, validationResult } = require("express-validator");
 
 const db = require("../db");
+const logger = require("../logger");
 const { requireAuth, requireRole } = require("../auth/middleware");
 
 const router = express.Router();
@@ -86,7 +87,7 @@ router.get(
         offset,
       });
     } catch (error) {
-      console.error("GET /api/clients:", error);
+      logger.error("GET /api/clients:", error);
       res.status(500).json({ message: error.message });
     }
   }
@@ -142,7 +143,7 @@ router.get(
         stats: stats.rows[0],
       });
     } catch (error) {
-      console.error("GET /api/clients/:id:", error);
+      logger.error("GET /api/clients/:id:", error);
       res.status(500).json({ message: error.message });
     }
   }
@@ -203,7 +204,7 @@ router.post(
 
       res.status(201).json({ data: r.rows[0] });
     } catch (error) {
-      console.error("POST /api/clients:", error);
+      logger.error("POST /api/clients:", error);
       if (error.code === "23505")
         return res.status(409).json({ message: "Client existant (customer_id en double)" });
       res.status(500).json({ message: error.message });
@@ -250,7 +251,7 @@ router.put(
 
       res.json({ data: r.rows[0] });
     } catch (error) {
-      console.error("PUT /api/clients/:id:", error);
+      logger.error("PUT /api/clients/:id:", error);
       res.status(500).json({ message: error.message });
     }
   }
@@ -289,7 +290,7 @@ router.delete(
 
       res.json({ message: "Client supprimé", id: r.rows[0].customer_id });
     } catch (error) {
-      console.error("DELETE /api/clients/:id:", error);
+      logger.error("DELETE /api/clients/:id:", error);
       res.status(500).json({ message: error.message });
     }
   }

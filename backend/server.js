@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 
 const config = require("./src/config");
 const db = require("./src/db");
+const logger = require("./src/logger");
 
 const { helmetMw, corsMw, originGuard } = require("./src/security/middleware");
 const { globalLimiter, aiLimiter } = require("./src/security/rateLimit");
@@ -110,7 +111,7 @@ app.get("/api/impayes", async (req, res) => {
 
     res.json({ data: r.rows });
   } catch (error) {
-    console.error("Erreur /api/impayes :", error);
+    logger.error("Erreur /api/impayes :", { error: error.message });
     res.status(500).json({ message: error.message });
   }
 });
@@ -211,7 +212,7 @@ app.post("/api/impayes", async (req, res) => {
         meta: { contrat: numero_contrat || null },
       });
     } catch (e) {
-      console.warn("notification fanout failed:", e.message);
+      logger.warn("notification fanout failed:", { error: e.message });
     }
 
     res.status(201).json({
@@ -219,7 +220,7 @@ app.post("/api/impayes", async (req, res) => {
       data: insertResult.rows[0],
     });
   } catch (error) {
-    console.error("Erreur POST /api/impayes :", error);
+    logger.error("Erreur POST /api/impayes :", { error: error.message });
     res.status(500).json({
       message: error.message,
     });
@@ -326,7 +327,7 @@ app.post("/api/mail/send-client-reminder", async (req, res) => {
       messageId: info.messageId,
     });
   } catch (error) {
-    console.error("POST /api/mail/send-client-reminder:", error);
+    logger.error("POST /api/mail/send-client-reminder:", { error: error.message });
     res.status(500).json({ message: error.message });
   }
 });
@@ -339,7 +340,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(`Unhandled error on ${req.method} ${req.originalUrl}:`, err);
+  logger.error(`Unhandled error on ${req.method} ${req.originalUrl}:`, { error: err.message, stack: err.stack });
   res.status(err.status || 500).json({
     message: config.isProd ? "Erreur serveur interne" : err.message || "Erreur serveur interne",
   });
@@ -351,7 +352,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 MILES API running on http://localhost:${PORT}`);
-  console.log(`🔧 Mode: ${config.isProd ? "production" : "development"}`);
-  console.log(`🤖 Groq IA activee - Analyse intelligente des donnees`);
+  logger.info(`🚀 MILES API running on http://localhost:${PORT}`);
+  logger.info(`🔧 Mode: ${config.isProd ? "production" : "development"}`);
+  logger.info(`🤖 Groq IA activee - Analyse intelligente des donnees`);
 });
