@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Bot, Send, Sparkles, RefreshCw, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { API_BASE } from "../config.js";
 
 const questions = [
   "Quel est le revenu mensuel du client ?",
@@ -100,7 +101,7 @@ function SmartCreditAssessmentChat() {
         setLoading(true);
 
         const response = await fetch(
-          "http://localhost:5000/api/smart-credit-assessment",
+          `${API_BASE}/smart-credit-assessment`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -146,7 +147,7 @@ function SmartCreditAssessmentChat() {
     setOcrStatus(null);
 
     try {
-      const res = await fetch("http://localhost:5000/api/scan-credit-document", {
+      const res = await fetch(`${API_BASE}/scan-credit-document`, {
         method: "POST",
         body: formData,
       });

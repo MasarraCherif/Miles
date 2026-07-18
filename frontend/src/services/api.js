@@ -1,6 +1,7 @@
 import { apiFetch } from "./auth.js";
+import { API_BASE } from "../config.js";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = API_BASE;
 
 const parse = async (res) => {
   if (res.status === 204) return null;

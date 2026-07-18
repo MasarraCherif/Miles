@@ -31,6 +31,11 @@ const config = {
     name: process.env.DB_NAME || null,
     user: process.env.DB_USER || null,
     password: process.env.DB_PASSWORD || null,
+    // Managed Postgres (Supabase, RDS, etc.) requires TLS. Defaults to on
+    // for any non-local host; set DB_SSL=false to force it off.
+    ssl: process.env.DB_SSL
+      ? process.env.DB_SSL === "true"
+      : !["localhost", "127.0.0.1"].includes(process.env.DB_HOST || "localhost"),
   },
 
   // JWT secrets — must be set in prod, randomized in dev

@@ -15,6 +15,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import apiClient from "../services/api.js";
 import { authStore } from "../services/auth.js";
+import { API_BASE } from "../config.js";
 
 const severityMap = {
   critical: { cls: "danger", Icon: AlertTriangle, label: "Critique" },
@@ -73,7 +74,7 @@ export default function Notifications() {
 
     try {
       es = new EventSource(
-        `http://localhost:5000/api/notifications/stream?_t=${encodeURIComponent(token)}`
+        `${API_BASE}/notifications/stream?_t=${encodeURIComponent(token)}`
       );
     } catch (_) {
       return;

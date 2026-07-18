@@ -14,6 +14,7 @@ if (config.db.host) {
       database: config.db.name,
       user: config.db.user,
       password: config.db.password,
+      ssl: config.db.ssl ? { rejectUnauthorized: false } : false,
     });
     mode = "postgres";
     logger.info(`[db] PostgreSQL adapter active (${config.db.host}:${config.db.port})`);

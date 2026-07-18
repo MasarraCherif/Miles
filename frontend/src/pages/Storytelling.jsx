@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sparkles, Wand2 } from "lucide-react";
+import { API_BASE } from "../config.js";
 
 function Storytelling() {
   const [clientName, setClientName] = useState("");
@@ -22,7 +23,7 @@ function Storytelling() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/ai/client-storytelling",
+        `${API_BASE}/ai/client-storytelling`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

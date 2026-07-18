@@ -10,8 +10,9 @@ import {
   TrendingUp,
   TrendingDown
 } from "lucide-react";
+import { API_ORIGIN } from "../config.js";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = API_ORIGIN;
 
 const StorytellingHybrid = () => {
   const [data, setData] = useState(null);

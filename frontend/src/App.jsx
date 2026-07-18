@@ -46,6 +46,7 @@ import Sparkline from "./components/Sparkline.jsx";
 import CountUp from "./components/CountUp.jsx";
 import { authStore, bootstrapSession, logout as authLogout } from "./services/auth.js";
 import apiClient from "./services/api.js";
+import { API_BASE } from "./config.js";
 import "./App.css";
 
 /* ----------------------------------------------------------
@@ -293,7 +294,7 @@ useEffect(() => {
     setStory("");
     try {
       const res = await fetch(
-        `http://localhost:5000/api/storytelling/${encodeURIComponent(clientName)}`
+        `${API_BASE}/storytelling/${encodeURIComponent(clientName)}`
       );
       const data = await res.json();
       setStory(data.storytelling || "Aucun storytelling trouvé.");
@@ -888,7 +889,7 @@ function NotificationBell() {
     let es;
     try {
       es = new EventSource(
-        `http://localhost:5000/api/notifications/stream?_t=${encodeURIComponent(token)}`
+        `${API_BASE}/notifications/stream?_t=${encodeURIComponent(token)}`
       );
     } catch (_) { return; }
     const onAny = () => refresh();

@@ -1,3 +1,5 @@
+import { API_BASE } from "../config.js";
+
 const ACCESS_TOKEN_KEY = "miles_access_token";
 const USER_KEY = "miles_current_user";
 
@@ -12,7 +14,7 @@ let currentUser = (() => {
 })();
 
 const subscribers = new Set();
-const API = "http://localhost:5000/api";
+const API = API_BASE;
 
 const notify = () => {
   subscribers.forEach((cb) => cb({ accessToken, user: currentUser }));

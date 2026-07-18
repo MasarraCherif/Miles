@@ -4,6 +4,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   RadialBarChart, RadialBar
 } from "recharts";
+import { API_BASE } from "../config.js";
 
 const PredictionML = () => {
   const [clientName, setClientName] = useState("");
@@ -32,10 +33,10 @@ const PredictionML = () => {
       
       // Appels parallèles aux 4 endpoints
       const [kpiRes, monthlyRes, riskDistRes, accuracyRes] = await Promise.all([
-        fetch("http://localhost:5000/api/ml/stats/kpi"),
-        fetch("http://localhost:5000/api/ml/stats/monthly"),
-        fetch("http://localhost:5000/api/ml/stats/risk-distribution"),
-        fetch("http://localhost:5000/api/ml/stats/accuracy-radial")
+        fetch(`${API_BASE}/ml/stats/kpi`),
+        fetch(`${API_BASE}/ml/stats/monthly`),
+        fetch(`${API_BASE}/ml/stats/risk-distribution`),
+        fetch(`${API_BASE}/ml/stats/accuracy-radial`)
       ]);
       
       const kpi = await kpiRes.json();
@@ -58,7 +59,7 @@ const PredictionML = () => {
   // Charger l'historique des prédictions depuis PostgreSQL
   const loadFullHistory = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/ml/history/all?limit=10");
+      const response = await fetch(`${API_BASE}/ml/history/all?limit=10`);
       const data = await response.json();
       if (response.ok) {
         setHistory(data);
@@ -81,7 +82,7 @@ const PredictionML = () => {
       setError("");
       setResult(null);
       
-      const response = await fetch("http://localhost:5000/api/ml/predict", {
+      const response = await fetch(`${API_BASE}/ml/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clientName }),
