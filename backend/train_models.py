@@ -57,7 +57,7 @@ METADATA_PATH = os.path.join(os.path.dirname(__file__), "model_metadata.json")
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_NAME = os.getenv("DB_NAME", "talend")
 DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASS = os.getenv("DB_PASSWORD", "lala")
+DB_PASS = os.getenv("DB_PASSWORD")
 
 NUMERIC_RAW = [
     "montant_impaye",

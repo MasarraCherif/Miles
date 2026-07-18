@@ -1,4 +1,5 @@
 import sys
+import os
 import json
 import psycopg2
 import pandas as pd
@@ -8,14 +9,15 @@ class PredictiveAI:
     def __init__(self):
         self.conn = None
         self._connect_db()
-    
+
     def _connect_db(self):
         try:
             self.conn = psycopg2.connect(
-                host="localhost",
-                database="talend",
-                user="postgres",
-                password="lala"
+                host=os.environ.get("DB_HOST", "localhost"),
+                port=os.environ.get("DB_PORT", "5432"),
+                database=os.environ.get("DB_NAME", "talend"),
+                user=os.environ.get("DB_USER", "postgres"),
+                password=os.environ.get("DB_PASSWORD"),
             )
         except Exception as e:
             print(f"DB error: {e}", file=sys.stderr)

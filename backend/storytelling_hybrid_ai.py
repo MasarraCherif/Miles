@@ -19,11 +19,11 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 class AdvancedAIAnalysis:
     def __init__(self):
         self.conn = psycopg2.connect(
-            host="localhost",
-            database="talend",
-            user="postgres",
-            password="lala",
-            port="5432"
+            host=os.environ.get("DB_HOST", "localhost"),
+            port=os.environ.get("DB_PORT", "5432"),
+            database=os.environ.get("DB_NAME", "talend"),
+            user=os.environ.get("DB_USER", "postgres"),
+            password=os.environ.get("DB_PASSWORD"),
         )
         self.client = Groq(api_key=GROQ_API_KEY)
 
