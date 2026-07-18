@@ -332,6 +332,20 @@ app.post("/api/mail/send-client-reminder", async (req, res) => {
 });
 
 /* ----------------------------------------------------------
+   404 + global error handling
+---------------------------------------------------------- */
+app.use((req, res) => {
+  res.status(404).json({ message: "Route non trouvée" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(`Unhandled error on ${req.method} ${req.originalUrl}:`, err);
+  res.status(err.status || 500).json({
+    message: config.isProd ? "Erreur serveur interne" : err.message || "Erreur serveur interne",
+  });
+});
+
+/* ----------------------------------------------------------
    START SERVER
 ---------------------------------------------------------- */
 const PORT = process.env.PORT || 5000;
