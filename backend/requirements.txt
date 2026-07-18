@@ -1,5 +1,5 @@
-# Python deps for the ML/AI scripts shelled out to by server.js
-# (predict_model.py, storytelling_hybrid_ai.py, predictive_ai.py)
+# Python deps for the ML/AI/OCR scripts shelled out to by server.js
+# (predict_model.py, storytelling_hybrid_ai.py, predictive_ai.py, easyocr_script.py)
 psycopg2-binary==2.9.10
 pandas==2.2.3
 numpy==2.1.3
@@ -7,8 +7,8 @@ scikit-learn==1.5.2
 joblib==1.4.2
 groq==0.13.0
 
-# easyocr (+ its torch dependency) powers /api/scan-credit-document
-# (easyocr_script.py) but is too heavy for free-tier hosting (512MB RAM).
-# ENABLE_OCR_SCAN=false disables that route server-side — uncomment below
-# and unset ENABLE_OCR_SCAN if you move to a plan with more memory.
-# easyocr==1.7.2
+# easyocr (+ its torch dependency) powers /api/scan-credit-document. Heavy —
+# if this doesn't fit your hosting plan's memory, comment it back out and
+# set ENABLE_OCR_SCAN=false / VITE_ENABLE_OCR_SCAN=false to disable gracefully
+# instead of crashing.
+easyocr==1.7.2
