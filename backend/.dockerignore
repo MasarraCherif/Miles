@@ -1,0 +1,11 @@
+node_modules
+.env
+.env.*
+!.env.example
+uploads
+mail-outbox
+*.pkl
+*.traineddata
+model_metadata.json
+model_comparison_results.csv
+npm-debug.log*
