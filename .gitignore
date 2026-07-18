@@ -32,6 +32,15 @@ frontend/.env
 # Mail dev outbox (rendered emails for preview — contains codes)
 backend/mail-outbox/
 
+# Uploaded client files (never commit real client data)
+backend/uploads/
+
+# Trained ML models / OCR language data / generated model metadata
+backend/*.pkl
+backend/*.traineddata
+backend/model_metadata.json
+backend/model_comparison_results.csv
+
 # Logs
 *.log
 npm-debug.log*
