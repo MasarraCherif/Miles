@@ -114,7 +114,16 @@ router.post("/smart-credit-assessment", async (req, res) => {
 /* ----------------------------------------------------------
    SCAN CREDIT DOCUMENT
 ---------------------------------------------------------- */
+const ocrEnabled = process.env.ENABLE_OCR_SCAN !== "false";
+
 router.post("/scan-credit-document", upload.single("file"), async (req, res) => {
+  if (!ocrEnabled) {
+    return res.status(501).json({
+      success: false,
+      message: "Le scan de document (OCR) est désactivé sur ce déploiement.",
+    });
+  }
+
   try {
     if (!req.file) {
       return res.status(400).json({

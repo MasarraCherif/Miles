@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Bot, Send, Sparkles, RefreshCw, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
-import { API_BASE } from "../config.js";
+import { API_BASE, OCR_ENABLED } from "../config.js";
 
 const questions = [
   "Quel est le revenu mensuel du client ?",
@@ -240,21 +240,23 @@ function SmartCreditAssessmentChat() {
           💬 Mode Chat
         </button>
 
-        <button
-          className="btn btn-secondary"
-          onClick={() => { setMode("upload"); setResult(null); setOcrStatus(null); }}
-          style={{ 
-            padding: "10px 20px", 
-            cursor: "pointer", 
-            backgroundColor: mode === "upload" ? "#3b82f6" : "#e5e7eb",
-            color: mode === "upload" ? "white" : "#374151",
-            border: "none",
-            borderRadius: 8,
-            fontWeight: 500
-          }}
-        >
-          📄 Scan Document (OCR)
-        </button>
+        {OCR_ENABLED && (
+          <button
+            className="btn btn-secondary"
+            onClick={() => { setMode("upload"); setResult(null); setOcrStatus(null); }}
+            style={{
+              padding: "10px 20px",
+              cursor: "pointer",
+              backgroundColor: mode === "upload" ? "#3b82f6" : "#e5e7eb",
+              color: mode === "upload" ? "white" : "#374151",
+              border: "none",
+              borderRadius: 8,
+              fontWeight: 500
+            }}
+          >
+            📄 Scan Document (OCR)
+          </button>
+        )}
       </div>
 
       <div className="chat-shell" style={{ 
