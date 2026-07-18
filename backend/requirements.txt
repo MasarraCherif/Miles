@@ -7,8 +7,9 @@ scikit-learn==1.5.2
 joblib==1.4.2
 groq==0.13.0
 
-# easyocr (+ its torch dependency) powers /api/scan-credit-document. Heavy —
-# if this doesn't fit your hosting plan's memory, comment it back out and
-# set ENABLE_OCR_SCAN=false / VITE_ENABLE_OCR_SCAN=false to disable gracefully
-# instead of crashing.
-easyocr==1.7.2
+# easyocr (+ its torch dependency) powers /api/scan-credit-document. Confirmed
+# on 2026-07-18 that it OOMs the whole process on Render's free tier
+# (512MB) — the request 502s and takes /api/health down with it, not just
+# that route. Keep commented out unless you're on a plan with more memory.
+# ENABLE_OCR_SCAN=false / VITE_ENABLE_OCR_SCAN=false disable it gracefully.
+# easyocr==1.7.2
