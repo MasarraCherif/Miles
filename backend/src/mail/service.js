@@ -18,6 +18,9 @@ if (mode === "smtp") {
     port: config.smtp.port,
     secure: config.smtp.port === 465,
     auth: { user: config.smtp.user, pass: config.smtp.password },
+    // Force IPv4 — some hosts (e.g. Render free tier) can't route outbound
+    // IPv6, and Gmail's SMTP host resolves to an AAAA record first.
+    family: 4,
   });
   logger.info(`[mail] SMTP transport active (${config.smtp.host}:${config.smtp.port})`);
 } else {

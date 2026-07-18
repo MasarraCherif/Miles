@@ -295,6 +295,9 @@ app.post("/api/mail/send-client-reminder", async (req, res) => {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
+      // Force IPv4 — some hosts (e.g. Render free tier) can't route
+      // outbound IPv6, and Gmail's SMTP host resolves to an AAAA record first.
+      family: 4,
     });
 
     const subject = `Rappel de paiement - ${clientName || "Client"}`;
